@@ -25,13 +25,9 @@ Pour fonctionner correctement, cela suppose que le système hôte dispose d'un u
 L'utilisateur _system_ sert également pour la connexion ssh.
 
 
-  
-
-
-
 == Builder l'image
   
-    docker build -t jerep6/acimflo-backup:1.0 Backup/
+    docker build -t jerep6/acimflo-backup:1.0 .
 	
 == Lancer l'image
-    docker run -d -ti --name=backup -v /home/jerep6/docker/data/:/data -v /path_to_home/.ssh/authorized_keys:/home/system/.ssh/authorized_keys -p 873:873 -p 22:22 jerep6/acimflo-backup:1.0 /bin/bash
+    docker run -d -ti --name=backup -v /mnt/crypt/backup/:/data -v /path_to_home/.ssh/authorized_keys:/home/system/.ssh/authorized_keys -p 873:873 -p 22:22 jerep6/acimflo-backup:1.0 /bin/bash
