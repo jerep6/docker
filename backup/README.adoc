@@ -1,0 +1,30 @@
+= Backup
+
+Le but de cette image est de créer un container docker exposant 
+
+  * un service rsync pour sauvegarder les fichiers des postes windows situés sur le même réseau
+  * un service ssh pour sauvegarder les fichiers d'un poste à travers Internet via rsync
+
+ 
+
+== Architecture
+
+Deux ports sont exposés :
+  
+  * **22** : port du serveur ssh
+  * **873** : port du serveur rsync
+
+Les chemins de stockage des modules rsync exposés sont situés dans le répertoire /data/ du container.
+Ce répertoire est à mapper sur la machine hôte via l'option _-v_ de docker run. Le dossier est mappé directement sur les répertoires de la machine afin de crypter les données.
+Le dossier cible est une partition LUKS.
+
+  
+image::archi.png[]
+
+
+== Builder l'image
+  
+    docker build -t jerep6/acimflo-backup:1.0 Backup/
+	
+== Lancer l'image
+    docker run -d -ti --name=backup -v /mnt/crypt/backup/:/data -p 873:873 -p 22:22 jerep6/acimflo-backup:1.0
