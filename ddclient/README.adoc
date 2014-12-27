@@ -1,0 +1,18 @@
+== Docker ddclient
+
+Le but de cette image est de créer un container docker lançant le service ddclient permettant de synchroniser son adresse IP avec un nom de domaine.
+
+== Architecture
+
+Le conteneur lance le service ddclient. L'appelant doit fournir un fichier de configuration (ddclient.conf) valide via un volume.
+
+== Builder l'image
+
+Le fichier Dockerfile fait référence à une image située dans un registry privé (localhost:5000/debian-base). Pour builder l'image sans ce registry, il suffit de builder l'image debian-base en local et d'y faire référence dans le Dockerfile de ddclient.
+
+    docker build -t localhost:5000/acimflo-ddclient .
+    
+    
+== Lancer l'image
+	docker rm ddclient
+    docker run --name="ddclient" -d -v /mnt/stockage1/docker/ddclient/ddclient.conf:/etc/ddclient.conf localhost:5000/acimflo-ddclient
