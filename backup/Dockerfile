@@ -31,6 +31,7 @@ command=/etc/init.d/ssh start\n\
 
 
 VOLUME /data
+VOLUME /data_crypt
 EXPOSE 22
 EXPOSE 873
 
