@@ -1,5 +1,5 @@
 #FROM jerep6/debian-base
-FROM  localhost:5000/acimflo-ddclient
+FROM  localhost:5000/debian-base
 MAINTAINER jerep6
 
 # Install ddclient

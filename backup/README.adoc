@@ -14,9 +14,12 @@ Deux ports sont exposés :
   * **22** : port du serveur ssh
   * **873** : port du serveur rsync
 
-Les chemins de stockage des modules rsync exposés sont situés dans le répertoire /data/ du container.
-Ce répertoire est à mapper sur la machine hôte via l'option _-v_ de docker run. Le dossier est mappé directement sur les répertoires de la machine afin de crypter les données.
-Le dossier cible est une partition LUKS.
+La configuration de rsync est à fournir lors du run via un volume. La connexion ssh ne s'effectue qu'avec une clé. Le conteneur ne contenant aucune clé autorisée, il est impératif d'utiliser le répertoire _.ssh_ de la machine hôte grâce à un volume.
+
+  
+Les chemins de stockage des modules rsync exposés sont situés dans le répertoire /data/ et /data_crypt du container. Le dernier contient des données chiffrées contrairement au premier. Pour ce faire, il fait monter avec l'option _"-v"_ les volumes correspondants.
+
+
 
 image::archi.png[]
 
@@ -27,7 +30,8 @@ L'utilisateur _system_ sert également pour la connexion ssh.
 
 == Builder l'image
   
-    docker build -t jerep6/acimflo-backup:1.0 .
+    docker build -t localhost:5000/acimflo-backup .
 	
 == Lancer l'image
-    docker run -d -ti --name=backup -v /mnt/crypt/backup/:/data -v /path_to_home/.ssh/authorized_keys:/home/system/.ssh/authorized_keys -p 873:873 -p 22:22 jerep6/acimflo-backup:1.0 /bin/bash
+
+    docker run --name="backup" -d -v /mnt/stockage1/donnees/:/data -v /mnt/stockage2/donnees/:/data_crypt -v /mnt/stockage1/docker/backup/rsyncd.conf:/etc/rsyncd.conf -v /mnt/stockage1/docker/backup/rsyncd.secrets:/etc/rsyncd.secrets -v /home/jerep6/.ssh:/home/system/.ssh -p 873:873 -p 10022:22 localhost:5000/acimflo-backup
