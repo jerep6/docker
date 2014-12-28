@@ -12,7 +12,7 @@ ADD diaporama.conf /etc/apache2/sites-available/diaporama.conf
 RUN a2enmod userdir && a2enmod rewrite\
 && a2dissite default\
 && a2ensite diaporama.conf\
-&& echo "Include /etc/phpmyadmin/apache.conf" > /etc/apache2/apache2.conf
+&& echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
 
 # Create default index.php when no volume is mounted
 RUN mkdir -p /app/www/ && echo "<?php echo 'It\'s working'; ?>" > /app/www/index.php
@@ -20,8 +20,9 @@ RUN mkdir -p /app/www/ && echo "<?php echo 'It\'s working'; ?>" > /app/www/index
 
 
 # PHP : configuration
-RUN sed -i -e"s/^max_execution_time =.*/max_execution_time = 60/" /etc/mysql/my.cnf\
-&& sed -i -e"s/^max_input_time =.*/max_input_time = 60/" /etc/mysql/my.cnf
+RUN sed -i -e"s/^max_execution_time =.*/max_execution_time = 60/" /etc/php5/apache2/php.ini\
+&& sed -i -e"s/^max_input_time =.*/max_input_time = 60/" /etc/php5/apache2/php.ini\
+&& sed -i -e"s/^display_errors =.*/display_errors == On/" /etc/php5/apache2/php.ini
 
 
 
@@ -39,7 +40,7 @@ nodaemon=true\n\
 command=/etc/init.d/mysql start\n\
 \
 [program:apache2]\n\
-command=/etc/init.d/apache start\n\
+command=/etc/init.d/apache2 start\n\
 " > /etc/supervisor/conf.d/config.conf
 
 

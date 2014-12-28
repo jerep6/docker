@@ -24,7 +24,7 @@ Le répertoire du serveur apache est /app/www/. Le code php du diaporama doit do
     docker build -t localhost:5000/acimflo-diaporama .
 
 == Initialiser l'image
-Comme décrit précédement, il est nécessaire d'initialiser le répertoire de mysql car celui-ci est monté via un volume : 
+Comme décrit précédemment, il est nécessaire d'initialiser le répertoire de mysql car celui-ci est monté via un volume : 
 
    docker run -ti -v /mnt/stockage1/docker/diaporama/mysql:/app/mysql/ localhost:5000/acimflo-diaporama /bin/bash
    sh /tmp/mysql_change_database_directory.sh
