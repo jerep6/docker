@@ -13,24 +13,32 @@ RUN a2enmod userdir && a2enmod rewrite\
 && a2dissite default\
 && a2ensite diaporama.conf
 
+# Create default index.php when no volume is mounted
 RUN mkdir -p /app/www/Diaporama/DiaporamaAcimflo && echo "<?php echo 'It\'s working'; ?>" > /app/www/Diaporama/DiaporamaAcimflo/index.php
 
 # PHP : configuration
 RUN sed -i -e"s/^max_execution_time =.*/max_execution_time = 60/" /etc/mysql/my.cnf\
 && sed -i -e"s/^max_input_time =.*/max_input_time = 60/" /etc/mysql/my.cnf
 
+# MySQL : change data directory
+RUN sed -i -e"s/^datadir.*/datadir  = \/app\/mysql/" /etc/mysql/my.cnf
+
 #Generate configuration for supervisor
 RUN echo "\
 [supervisord]\n\
 nodaemon=true\n\
 \
-[program:ddclient]\n\
-command=/etc/init.d/ddclient start\n\
+[program:mysql]\n\
+command=/etc/init.d/mysql start\n\
+\
+[program:apache2]\n\
+command=/etc/init.d/apache start\n\
 " > /etc/supervisor/conf.d/config.conf
 
 
 EXPOSE 80
 VOLUME /app/www/
+VOLUME /app/mysql/
 
 # Run ddclient on startup
 #CMD ["/usr/bin/supervisord"]
