@@ -1,0 +1,19 @@
+#FROM jerep6/debian-base
+FROM  localhost:5000/debian-base
+MAINTAINER jerep6
+
+# Install mysql
+RUN apt-get install --no-install-recommends -y mysql-server
+
+
+#Generate configuration for supervisor
+RUN echo "\
+[supervisord]\n\
+nodaemon=true\n\
+\
+[program:ddclient]\n\
+command=/etc/init.d/ddclient start\n\
+" > /etc/supervisor/conf.d/config.conf
+
+# Run ddclient on startup
+#CMD ["/usr/bin/supervisord"]
