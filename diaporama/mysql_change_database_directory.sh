@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/etc/init.d/mysql stop
+#/etc/init.d/mysql stop
 
 # Install database in directory configured in my.cnf
 mysql_install_db

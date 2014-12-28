@@ -11,17 +11,24 @@ ADD diaporama.conf /etc/apache2/sites-available/diaporama.conf
 # Apache : activate modules and sites
 RUN a2enmod userdir && a2enmod rewrite\
 && a2dissite default\
-&& a2ensite diaporama.conf
+&& a2ensite diaporama.conf\
+&& echo "Include /etc/phpmyadmin/apache.conf" > /etc/apache2/apache2.conf
 
 # Create default index.php when no volume is mounted
-RUN mkdir -p /app/www/Diaporama/DiaporamaAcimflo && echo "<?php echo 'It\'s working'; ?>" > /app/www/Diaporama/DiaporamaAcimflo/index.php
+RUN mkdir -p /app/www/ && echo "<?php echo 'It\'s working'; ?>" > /app/www/index.php
+
+
 
 # PHP : configuration
 RUN sed -i -e"s/^max_execution_time =.*/max_execution_time = 60/" /etc/mysql/my.cnf\
 && sed -i -e"s/^max_input_time =.*/max_input_time = 60/" /etc/mysql/my.cnf
 
+
+
 # MySQL : change data directory
 RUN sed -i -e"s/^datadir.*/datadir  = \/app\/mysql/" /etc/mysql/my.cnf
+ADD mysql_change_database_directory.sh /tmp/
+
 
 #Generate configuration for supervisor
 RUN echo "\
@@ -40,5 +47,5 @@ EXPOSE 80
 VOLUME /app/www/
 VOLUME /app/mysql/
 
-# Run ddclient on startup
-#CMD ["/usr/bin/supervisord"]
+# Run apache and mysql on startup
+CMD ["/usr/bin/supervisord"]
