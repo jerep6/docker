@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#Détourne le signal SIGINT
+trap 'echo Control-C exit ...; exit 1' INT
+
+#Répertoire où sont stockés les fichiers sur le serveur distant
+repertoireRsync="/mnt/donnees/Replication/"
+
+#Adresse du serveur : fourni en paramètre de lancement de docker via -e REPLICATE_SERVER=XXX
+serveur=$REPLICATE_SERVER
+
+#Utilisateur ssh du serveur
+utilisateur="jerep6"
+
+#Option de rsync
+RSYNC_OPTS_GENERALES="-av --delete --exclude-from $(dirname $0)/exclude.rsync"
+RSYNC_OPTS_SSH="ssh -p 443 -i /home/system/.ssh/rsync.priv"
+
+
+
+################# DOSSIERS #################
+#synchroSource = Tableau contenant le chemin des dossiers de l'agence à synchroniser
+#synchroDest = Tableau contenant le chemin des dossiers (sur le serveur)
+synchroSource[1]="/data/Agence/Accueil"
+synchroDest[1]=$repertoireRsync"Agence/"
+
+synchroSource[2]="/data/Agence/Login"
+synchroDest[2]=$repertoireRsync"Agence/"
+
+synchroSource[3]="/data/Agence/EdlSoft"
+synchroDest[3]=$repertoireRsync"EdlSoft/"
+
+synchroSource[4]="/data/Agence/OGI"
+synchroDest[4]=$repertoireRsync"OGI/"
+
+#Florence est crypté. Vérifie qu'il est bien monté avant de le synchroniser
+if [ -n "`mount | grep "Florence"`" ]; then
+    synchroSource[5]="/data_crypt/Florence/"
+    synchroDest[5]=$repertoireRsync"Florence/"
+fi
+
+
+################# TRAITEMENT #################
+#Parcours du tableau synchroSource pour uploader les dossiers
+for index in "${!synchroSource[@]}"; do
+    echo ${synchroSource[$index]} "==>" ${synchroDest[$index]};
+    rsync $RSYNC_OPTS_GENERALES --compress -e "$RSYNC_OPTS_SSH" ${synchroSource[$index]} $utilisateur@$serveur:${synchroDest[$index]}
+done
+

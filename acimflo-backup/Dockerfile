@@ -1,8 +1,8 @@
 FROM  localhost:5000/debian-base
 MAINTAINER jerep6
 
-# Install rsync and ssh (for rsync over ssh)
-RUN apt-get install --no-install-recommends -y rsync openssh-server
+# Install rsync and ssh (for rsync over ssh) and cron
+RUN apt-get install --no-install-recommends -y rsync openssh-server cron
 
 # RSYNC : configure
 RUN sed -i 's/RSYNC_ENABLE=.*$/RSYNC_ENABLE=true/g' /etc/default/rsync
@@ -16,6 +16,13 @@ RUN groupadd -g1000 system \
 RUN sed -i 's/#PasswordAuthentication.*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
 
 
+# Cron
+RUN mkdir -p /app/rsync/log
+ADD cron.conf /tmp/
+ADD rsyncSeignosse /app/rsync/
+RUN crontab /tmp/cron.conf && rm /tmp/cron.conf\
+&& chmod +x /app/rsync/rsyncSeignosse
+
 
 #Generate configuration for supervisor
 RUN echo "\
@@ -27,6 +34,9 @@ command=/etc/init.d/rsync start\n\
 \
 [program:ssh]\n\
 command=/etc/init.d/ssh start\n\
+\
+[program:cron]\n\
+command=/etc/init.d/cron start\n\
 " > /etc/supervisor/conf.d/config.conf
 
 

@@ -28,10 +28,12 @@ Pour fonctionner correctement, cela suppose que le système hôte dispose d'un u
 L'utilisateur _system_ sert également pour la connexion ssh.
 
 
+Le conteneur est prévu pour sauvegarder tous les soirs les données à l'aide du script /app/rsync/rsyncSeignosse sur un autre ordinateur. L'url de ce serveur est spécifié lors du run via le paramètre -e REPLICATE_SERVER=XXX
+
 == Builder l'image
   
     docker build -t localhost:5000/acimflo-backup .
 	
 == Lancer l'image
 
-    docker run --name="backup" -d -v /mnt/stockage1/donnees/:/data -v /mnt/stockage2/donnees/:/data_crypt -v /mnt/stockage1/docker/backup/rsyncd.conf:/etc/rsyncd.conf -v /mnt/stockage1/docker/backup/rsyncd.secrets:/etc/rsyncd.secrets -v /home/jerep6/.ssh:/home/system/.ssh -p 873:873 -p 10022:22 localhost:5000/acimflo-backup
+    docker run --name="backup" -e REPLICATE_SERVER="adresse.com" -d -v /mnt/stockage1/donnees/:/data -v /mnt/stockage2/donnees/:/data_crypt -v /mnt/stockage1/docker/backup/rsyncd.conf:/etc/rsyncd.conf -v /mnt/stockage1/docker/backup/rsyncd.secrets:/etc/rsyncd.secrets -v /home/jerep6/.ssh:/home/system/.ssh -p 873:873 -p 10022:22 localhost:5000/acimflo-backup
