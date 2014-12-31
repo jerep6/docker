@@ -21,7 +21,7 @@ Les chemins de stockage des modules rsync exposés sont situés dans le réperto
 
 
 
-image::archi.png[]
+image::archi.png[align="center"]
 
 Le container contient un utilisateur nommé _system_ et ayant le uid et le gid 1000. Cet utilisateur sert à écrire les fichiers dans le répertoire /data/ (pour ne pas les écrire en root).
 Pour fonctionner correctement, cela suppose que le système hôte dispose d'un utilisateur ayant un uid et gid valant 1000.
