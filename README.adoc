@@ -31,4 +31,4 @@ Le nom du tag de l'image doit être de la sorte URL_REGISTRY/NOM_IMAGE
 Le tag peut s'effectuer soit au moment du build, soit après via la commande _docker tag_:
    
    docker build -t localhost:5000/acimflo-ddclient .
-   docker tag 8dbd9e392a96 192.168.1.7:5000/acimflo-ddclient
+   docker tag 8dbd9e392a96 localhost:5000/acimflo-ddclient
