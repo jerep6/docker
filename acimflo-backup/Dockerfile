@@ -48,7 +48,6 @@ EXPOSE 873
 # Run supervisord on startup
 CMD ["/usr/bin/supervisord"]
 
-
 #CMD /etc/init.d/rsync start \
 #&& /etc/init.d/ssh start \
 #&& read -p "wait" w
