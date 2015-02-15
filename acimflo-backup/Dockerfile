@@ -20,8 +20,9 @@ RUN sed -i 's/#PasswordAuthentication.*$/PasswordAuthentication no/g' /etc/ssh/s
 RUN mkdir -p /app/rsync/log
 ADD cron.conf /tmp/
 ADD rsyncSeignosse /app/rsync/
+ADD env_to_file.sh /app/
 RUN crontab /tmp/cron.conf && rm /tmp/cron.conf\
-&& chmod +x /app/rsync/rsyncSeignosse
+&& chmod +x /app/rsync/rsyncSeignosse && chown system:system /app/rsync/rsyncSeignosse
 
 
 #Generate configuration for supervisor
@@ -46,7 +47,7 @@ EXPOSE 22
 EXPOSE 873
 
 # Run supervisord on startup
-CMD ["/usr/bin/supervisord"]
+CMD sh /app/env_to_file.sh "REPLICATE_SERVER" && /usr/bin/supervisord
 
 #CMD /etc/init.d/rsync start \
 #&& /etc/init.d/ssh start \

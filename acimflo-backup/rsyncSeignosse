@@ -6,8 +6,14 @@ trap 'echo Control-C exit ...; exit 1' INT
 #Répertoire où sont stockés les fichiers sur le serveur distant
 repertoireRsync="/mnt/donnees/Replication/"
 
-#Adresse du serveur : fourni en paramètre de lancement de docker via -e REPLICATE_SERVER=XXX
-serveur=$REPLICATE_SERVER
+# Adresse du serveur : 
+# theorie : fourni en paramètre de lancement de docker via -e REPLICATE_SERVER=XXX
+# pratique : Le deamon docker n'a pas acces aux variable d'environnement de docker. Les variables sont donc ecrites
+# dans un fichier temporaire et lues après
+#serveur=$REPLICATE_SERVER
+serveur=`grep "REPLICATE_SERVER" | cut -d\= -f2 "/tmp/env_to_file.txt"`
+
+echo $serveur >> "/tmp/r.txt"
 
 #Utilisateur ssh du serveur
 utilisateur="jerep6"
