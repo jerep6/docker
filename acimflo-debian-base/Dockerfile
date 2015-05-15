@@ -6,7 +6,7 @@ RUN apt-get update
 
 # Install core packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get install --no-install-recommends -y wget curl ca-certificates less procps vim supervisor \
+RUN apt-get update && apt-get install --no-install-recommends -y wget curl ca-certificates less procps vim supervisor \
 && apt-get clean
 
 # Paris Timezone

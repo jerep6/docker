@@ -2,7 +2,7 @@ FROM  localhost:5000/debian-base
 MAINTAINER jerep6
 
 # Install rsync and ssh (for rsync over ssh) and cron
-RUN apt-get install --no-install-recommends -y rsync openssh-server cron
+RUN apt-get update && apt-get install --no-install-recommends -y rsync openssh-server cron
 
 # RSYNC : configure
 RUN sed -i 's/RSYNC_ENABLE=.*$/RSYNC_ENABLE=true/g' /etc/default/rsync

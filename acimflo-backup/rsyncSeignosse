@@ -11,7 +11,7 @@ repertoireRsync="/mnt/donnees/Replication/"
 # pratique : Le deamon docker n'a pas acces aux variable d'environnement de docker. Les variables sont donc ecrites
 # dans un fichier temporaire et lues après
 #serveur=$REPLICATE_SERVER
-serveur=`grep "REPLICATE_SERVER" | cut -d\= -f2 "/tmp/env_to_file.txt"`
+serveur=`grep "REPLICATE_SERVER" "/tmp/env_to_file.txt" | cut -d\= -f2`
 
 echo $serveur >> "/tmp/r.txt"
 
@@ -19,7 +19,8 @@ echo $serveur >> "/tmp/r.txt"
 utilisateur="jerep6"
 
 #Option de rsync
-RSYNC_OPTS_GENERALES="-av --delete --exclude-from $(dirname $0)/exclude.rsync"
+#RSYNC_OPTS_GENERALES="-av --delete --exclude-from $(dirname $0)/exclude.rsync"
+RSYNC_OPTS_GENERALES="-av --delete"
 RSYNC_OPTS_SSH="ssh -p 443 -i /home/system/.ssh/rsync.priv"
 
 
