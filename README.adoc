@@ -40,14 +40,19 @@ Le tag peut s'effectuer soit au moment du build, soit après via la commande _do
 +++Sur la machine de travail+++
 
 . tagguer l'image avec le nom du repository privé (localhost:5000 dans mon cas)
+	
 	docker tag -f 41e0dd6ab219 localhost:5000/jenkins
+
 .Envoyer l'image sur le repo privé
+	
 	docker push localhost:5000/jenkins
 
 +++Sur le serveur+++
 
 . Récupérer l'image sur le serveur à partir du repo privé
+
 	docker pull localhost:5000/jenkins
+
 . Lancer le container correspondant à la nouvelle image
 
 
