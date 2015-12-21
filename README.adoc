@@ -1,5 +1,31 @@
 = Docker
 
+== Docker sur mac
+
+**Client**
+
+. Installer le client via _brew install docker_
+. Exporter la variable d'environnement _DOCKER_HOST_
+
+  export DOCKER_HOST=tcp://vm:4243
+
+**Serveur**
+
+. Lancer docker sur la VM
+
+  docker -d -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock &
+
+**Partage de fichiers**
+
+Configurer VirtualBox pour partager le dossier home de l'utilisateur /User/XXX via un montage vbox_sf.
+Par défaut le dossier sera accessible sur la vm via le chemin _/media/sf_XXX_.
+Lors d'un montage de volume par la commande docker le dossier home sera accessible à travers la chemin de montage sur la VM
+car le daemon docker ne connait que les chemins de l'hôte sur lequel il tourne.
+
+Exemple pour le dossier /User/XXX/docker-partage
+
+ docker run [...] -v /media/sf_XXX/docker-partage/:/app/data
+
 == Registry privé
 
 J'utilise un registry privé afin de déposer mes images docker.
@@ -25,7 +51,7 @@ Le registry est fourni sous forme d'une image docker.
     
 **Déposer une image dans ce registry**
 
-   docker push localhost:5000/acimflo-ddclient
+  docker push localhost:5000/acimflo-ddclient
 
 L'username de l'image doit être remplacé par l'url du registry. Pour faire la différence entre un nom d'utilisateur et une url, docker analyse la présence de "." ou de ":"
 Le nom du tag de l'image doit être de la sorte URL_REGISTRY/NOM_IMAGE
@@ -35,7 +61,7 @@ Le tag peut s'effectuer soit au moment du build, soit après via la commande _do
    docker build -t localhost:5000/acimflo-ddclient .
    docker tag 8dbd9e392a96 localhost:5000/acimflo-ddclient
 
-**Marche à suive**
+**Marche à suivre**
 
 +++Sur la machine de travail+++
 
@@ -55,4 +81,19 @@ Le tag peut s'effectuer soit au moment du build, soit après via la commande _do
 
 . Lancer le container correspondant à la nouvelle image
 
+
+== Architecture complète
+image::archi2.png[align="center"]
+
+Mac ne dispose que d'un client docker. La partie serveur est hébergée sur une machine virtuelle Linux.
+Toutes les chemins et les connexions sont originaires de la VM. Pour accéder au registry privé, le tunnel SSH doit donc
+être ouvert à partir de la VM.
+
+L'ordinateur de l'AGENCE, héberge des containers docker. 3 sont pertinents sur ce schéma :
+
+ . **Registry** : toutes les images buildés par le poste de développement (à gauche sur le schéma) ou par le jenkins sont
+ poussées dans ce container.
+ . **Jenkins** : Dans ce container il est nécessaire de faire fonctionner un docker car le logiciel OGI est packagé dans
+ un container. Jenkins a en charge le build de toutes les dépendances docker ainsi que le push dans le registry.
+ . **OGI** : pour installer OGI il suffit de faire un pull de l'image à partir du registry
 
