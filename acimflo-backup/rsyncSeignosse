@@ -21,7 +21,7 @@ utilisateur="jerep6"
 #Option de rsync
 #RSYNC_OPTS_GENERALES="-av --delete --exclude-from $(dirname $0)/exclude.rsync"
 RSYNC_OPTS_GENERALES="-av --delete"
-RSYNC_OPTS_SSH="ssh -p 443 -i /home/system/.ssh/rsync.priv"
+RSYNC_OPTS_SSH="ssh -p 443 -i /home/system/.ssh/rsync.priv -o StrictHostKeyChecking=no"
 
 
 
