@@ -27,9 +27,8 @@
 LOG=/var/log/rsync/$(date +\%Y-\%m-\%d).txt
 mkdir -p /var/log/rsync
 
-export SERVEUR_TO_BACKUP="tyrosse.jerep6.fr"
+export SERVEUR_TO_BACKUP="backup"
 BACKUP_SCRIPT_PATH="/home/jerep6/rsync-backup.sh"
-SECOND_TO_WAIT_BEFORE_START_PROCESS=300
 USER_TO_RUN_SCRIPT=jerep6
 
 
@@ -37,7 +36,8 @@ case "$1" in
     start)
         echo `date` echo "Starting backup-script and wait $SECOND_TO_WAIT_BEFORE_START_PROCESS before run backup" >> $LOG
 
-        sudo -E -u $USER_TO_RUN_SCRIPT bash -c "(sleep $SECOND_TO_WAIT_BEFORE_START_PROCESS ; $BACKUP_SCRIPT_PATH)"  > $LOG &
+        #sudo -E -u $USER_TO_RUN_SCRIPT bash -c "(sleep $SECOND_TO_WAIT_BEFORE_START_PROCESS ; $BACKUP_SCRIPT_PATH)"  > $LOG &
+        sudo -E -u $USER_TO_RUN_SCRIPT $BACKUP_SCRIPT_PATH)> $LOG &
         echo "$!" > "/var/run/rsync-backup.pid"
         ;;
     stop)

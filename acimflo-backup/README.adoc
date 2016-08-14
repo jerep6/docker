@@ -38,12 +38,27 @@ Le conteneur est prévu pour sauvegarder tous les soirs les données à l'aide d
 
     docker run --name="backup" -e REPLICATE_SERVER="adresse.com" -d -v /mnt/stockage1/donnees/:/data -v /mnt/stockage2/donnees/:/data_crypt -v /mnt/stockage1/docker/backup/rsyncd.conf:/etc/rsyncd.conf -v /mnt/stockage1/docker/backup/rsyncd.secrets:/etc/rsyncd.secrets -v /home/jerep6/.ssh:/home/system/.ssh -p 873:873 -p 10022:22 localhost:5000/acimflo-backup
 
-= Rsync backup^2
+= Rsync backup2
 Afin de posséder une sauvegarde des données dans un deuxième endroit, il suffit de lancer un ordi disposant des scripts suivants. Ces derniers permettent de se connecter au serveur à backuper et de récupérer les dossiers configurés dans le script *rsync-backup.sh*
 
 **Prérequis** : 
   
-  *rsync installé sur le serveur à backuper ainsi que sur le serveur de backup
+  * rsync installé sur le serveur à backuper ainsi que sur le serveur de backup (dans le docker "backup")
   * clé ssh sans mot de passe
 
 Pour lancer le script au boot du serveur SysVinit il faut placer le fichier *initd-rsync-backup.sh* dans le dossier /etc/init.d/ le rendre exécutable et lancer la commande *update-rc.d init.d-rsync-backup defaults*
+
+Fichier **.ssh/config**
+  Host svr
+    User DOCKER_USER_IN_CONTAINER
+    Port PORT
+    HostName HOST
+    ForwardAgent yes
+    IdentityFile ~/.ssh/KEY
+
+  Host backup
+    User system
+    StrictHostKeyChecking no
+    IdentityFile ~/.ssh/KEY
+    ProxyCommand ssh -q svr nc -q0 localhost 10022
+
